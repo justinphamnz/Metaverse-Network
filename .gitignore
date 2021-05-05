@@ -27,3 +27,4 @@ customType.json
 /._*
 genesis-state.wasm
 genesis-wasm.wasm
+.dockerignore

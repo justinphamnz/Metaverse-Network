@@ -150,7 +150,7 @@ pub fn development_config() -> Result<ChainSpec, String> {
                     /* Sudo Account */
                     hex!["c0568109deb73ec388a329981e589a8d9baccd64a14107468aefae8806a70f2e"].into(),
                 ],
-                8.into(),
+                1008.into(),
             )
         },
         // Bootnodes
@@ -164,7 +164,7 @@ pub fn development_config() -> Result<ChainSpec, String> {
         // Extensions
         Extensions {
             relay_chain: "rococo".into(),
-            para_id: 8888_u32.into(),
+            para_id: 1008_u32.into(),
         },
     ))
 }
@@ -214,7 +214,7 @@ pub fn local_testnet_config(id: ParaId) -> Result<ChainSpec, String> {
         // Extensions
         Extensions {
             relay_chain: "rococo".into(),
-            para_id: 8_u32.into(),
+            para_id: 1008_u32.into(),
         },
     ))
 }
@@ -294,7 +294,7 @@ fn testnet_genesis(
 ) -> bitcountry_runtime::GenesisConfig {
     use bitcountry_runtime::{StakerStatus, DOLLARS};
 
-    const INITIAL_BALANCE: u128 = 1_000_000 * DOLLARS;
+    const INITIAL_BALANCE: u128 = 1_000_000_000 * DOLLARS;
     const INITIAL_STAKING: u128 = 100_000 * DOLLARS;
 
     bitcountry_runtime::GenesisConfig {

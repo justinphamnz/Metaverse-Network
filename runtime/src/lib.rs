@@ -116,8 +116,8 @@ impl_opaque_keys! {
 }
 
 pub const VERSION: RuntimeVersion = RuntimeVersion {
-    spec_name: create_runtime_str!("bitcountry-node"),
-    impl_name: create_runtime_str!("bitcountry-node"),
+    spec_name: create_runtime_str!("bitcountry-parachain"),
+    impl_name: create_runtime_str!("bitcountry-parachain"),
     authoring_version: 1,
     spec_version: 1,
     impl_version: 1,

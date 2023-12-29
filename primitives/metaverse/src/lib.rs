@@ -179,6 +179,7 @@ pub enum FungibleTokenId {
 	DEXShare(TokenId, TokenId),
 	MiningResource(TokenId),
 	Stable(TokenId),
+	ForeignToken(TokenId),
 }
 
 impl FungibleTokenId {
@@ -192,6 +193,10 @@ impl FungibleTokenId {
 
 	pub fn is_mining_resource_currency(&self) -> bool {
 		matches!(self, FungibleTokenId::MiningResource(_))
+	}
+
+	pub fn is_foreign_currency(&self) -> bool {
+		matches!(self, FungibleTokenId::ForeignToken(_))
 	}
 
 	pub fn decimals(&self) -> u8 {
@@ -395,6 +400,7 @@ pub trait ForeignAssetIdMapping<ForeignAssetId, MultiLocation, AssetMetadata> {
 	/// Returns the CurrencyId associated with a given MultiLocation.
 	fn get_currency_id(multi_location: MultiLocation) -> Option<FungibleTokenId>;
 }
+
 #[derive(Eq, PartialEq, Clone, Encode, Decode, RuntimeDebug, TypeInfo)]
 pub enum RewardType<FungibleTokenId, Balance, ClassId, TokenId> {
 	FungibleTokens(FungibleTokenId, Balance),
@@ -465,6 +471,7 @@ pub struct CampaignInfo<AccountId, Balance, BlockNumber, FungibleTokenId, ClassI
 	/// A hard-cap on the each reward amount that may be contributed.
 	pub cap: RewardType<FungibleTokenId, Balance, ClassId, TokenId>,
 }
+
 // For multiple time calculation type
 #[derive(Encode, Decode, Clone, RuntimeDebug, Eq, TypeInfo, MaxEncodedLen)]
 pub enum StakingRound {

@@ -18,14 +18,14 @@ members = [
 
 [workspace.dependencies]
 # General 
-codec = { package = "parity-scale-codec", version = "3.1.5", default-features = false, features = ["derive"] }
-serde = { version = "1.0.140" }
-scale-info = { version = "2.1.2", features = ["derive"], default-features = false }
-serde_json = "1.0.68"
-hex-literal = { version = "0.3.4" }
+codec = { package = "parity-scale-codec", version = "3.4.0", default-features = false, features = ["derive"] }
+serde = { version = "1.0.151", features = ["derive"] }
+serde_json = "1.0.92"
+scale-info = { version = "2.5.0", default-features = false, features = ["derive"] }
+hex-literal = "0.4"
 log = { version = "0.4.17", default-features = false }
 smallvec = "1.8.0"
-clap = { version = "4.2.4", features = ["derive"] }
+clap = { version = "4.2.5", features = ["derive"] }
 url = "2.3.1"
 tracing-core = "0.1.28"
 impl-trait-for-tuples = "0.2.2"
@@ -49,10 +49,8 @@ syn = { version = "1.0", features = ["extra-traits", "fold", "full", "visit"] }
 # General (node only)
 parking_lot = "0.12.1"
 async-trait = "0.1"
-futures = { version = "0.3.9", features = ["compat"] }
+futures = "0.3.21"
 jsonrpsee = { version = "0.16.2", features = ["server"] }
-jsonrpc-core = "18.0.0"
-jsonrpc-pubsub = "18.0.0"
 parity-util-mem = { version = "0.12.0", default-features = false, features = ["jemalloc-global"] }
 
 # FRAME

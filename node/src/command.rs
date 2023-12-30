@@ -60,7 +60,7 @@ fn load_spec(id: &str) -> std::result::Result<Box<dyn sc_service::ChainSpec>, St
 		#[cfg(feature = "with-metaverse-runtime")]
 		"metaverse-testnet" => Box::new(chain_spec::metaverse::metaverse_testnet_config()?),
 		#[cfg(feature = "with-pioneer-runtime")]
-		"pioneer-dev" => Box::new(chain_spec::pioneer::development_config()),
+		"pioneer-dev" => Box::new(chain_spec::pioneer::pioneer_dev_network_config_json()?),
 		#[cfg(feature = "with-pioneer-runtime")]
 		"pioneer-roc" => Box::new(chain_spec::pioneer::roc_pioneer_testnet_config()),
 		#[cfg(feature = "with-pioneer-runtime")]

@@ -408,6 +408,11 @@ pub mod pallet {
 		fn on_initialize(_n: BlockNumberFor<T>) -> Weight {
 			// let era_number = Self::get_era_index(T::RelayChainBlockNumber::current_block_number());
 			let era_number = Self::get_era_index(<frame_system::Pallet<T>>::block_number());
+			log::info!(
+				target: "pallet-spp",
+				"era_number: {:?}",
+				era_number
+			);
 
 			if !era_number.is_zero() {
 				let _ = Self::update_current_era(era_number).map_err(|err| err).ok();
@@ -940,6 +945,12 @@ impl<T: Config> Pallet<T> {
 				{
 					let pool_account_balance =
 						T::MultiCurrency::free_balance(currency_id, &T::PoolAccount::get().into_account_truncating());
+
+					log::info!(
+						target: "pallet-spp",
+						"handle_update_staking_round: unlock_duration {:?} with pool_account_balance {:?}",
+						unlock_duration, pool_account_balance
+					);
 					if pool_account_balance != BalanceOf::<T>::zero() {
 						Self::update_queue_request(
 							currency_id,
@@ -995,6 +1006,12 @@ impl<T: Config> Pallet<T> {
 		let reward_holding_origin = T::RewardHoldingAccount::get().into_account_truncating();
 		let reward_holding_balance = T::Currency::free_balance(&reward_holding_origin);
 
+		log::info!(
+			target: "pallet-spp",
+			"handle_reward_distribution_to_network_pool: reward rate per era {:?} with reward_holding_balance {:?}",
+			reward_per_era, reward_holding_balance
+		);
+
 		if reward_holding_balance.is_zero() {
 			// Ignore if reward distributor balance is zero
 			return Ok(());
@@ -1010,7 +1027,7 @@ impl<T: Config> Pallet<T> {
 			&reward_holding_origin,
 			&Self::get_reward_payout_account_id(),
 			amount_to_send,
-			ExistenceRequirement::KeepAlive,
+			ExistenceRequirement::AllowDeath,
 		)?;
 		<orml_rewards::Pallet<T>>::accumulate_reward(&Zero::zero(), FungibleTokenId::NativeToken(0), amount_to_send)?;
 		Ok(())
@@ -1022,6 +1039,11 @@ impl<T: Config> Pallet<T> {
 
 	fn handle_reward_distribution_to_pool_treasury(previous_era: EraIndex, new_era: EraIndex) -> DispatchResult {
 		let era_changes = new_era.saturating_sub(previous_era);
+		log::info!(
+			target: "pallet-spp",
+			"handle_reward_distribution_to_pool_treasury: era_changes {:?}",
+			era_changes
+		);
 		ensure!(!era_changes.is_zero(), Error::<T>::Unexpected);
 		// Get reward per era for pool treasury
 		let reward_rate_per_era = Self::estimated_reward_rate_per_era();
@@ -1030,7 +1052,11 @@ impl<T: Config> Pallet<T> {
 			.saturating_add(Rate::one())
 			.saturating_pow(era_changes.unique_saturated_into())
 			.saturating_sub(Rate::one());
-
+		log::info!(
+			target: "pallet-spp",
+			"reward rate : reward_rate {:?}",
+			reward_rate
+		);
 		let mut total_reward_staking: BalanceOf<T> = Zero::zero();
 		log::info!(
 			target: "pallet-spp",
@@ -1262,6 +1288,12 @@ impl<T: Config> Pallet<T> {
 	pub fn update_current_era(era_index: EraIndex) -> DispatchResult {
 		let previous_era = Self::relay_chain_current_era();
 		let new_era = previous_era.saturating_add(era_index);
+
+		log::info!(
+			target: "pallet-spp",
+			"update_current_era: previous_era {:?}, new_era {:?}",
+			previous_era,new_era
+		);
 
 		RelayChainCurrentEra::<T>::put(new_era);
 		//		LastEraUpdatedBlock::<T>::put(T::RelayChainBlockNumber::current_block_number());

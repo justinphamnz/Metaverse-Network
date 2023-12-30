@@ -87,6 +87,10 @@ pub fn development_config() -> ChainSpec {
 	)
 }
 
+pub fn pioneer_dev_network_config_json() -> Result<ChainSpec, String> {
+	ChainSpec::from_json_bytes(&include_bytes!("../../../node/res/pioneer-dev-2096-rococo-local-raw.json")[..])
+}
+
 pub fn local_testnet_config() -> ChainSpec {
 	// Give your base currency a unit name and decimal places
 	let mut properties = sc_chain_spec::Properties::new();

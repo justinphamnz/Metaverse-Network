@@ -18,10 +18,9 @@
 #![cfg_attr(not(feature = "std"), no_std)]
 
 use codec::{Encode, HasCompact};
-use frame_benchmarking::log;
 use frame_support::traits::ExistenceRequirement;
 use frame_support::{
-	ensure,
+	ensure, log,
 	pallet_prelude::*,
 	traits::{Currency, LockableCurrency, ReservableCurrency},
 	transactional, PalletId,
@@ -79,7 +78,6 @@ pub mod weights;
 
 #[frame_support::pallet]
 pub mod pallet {
-	use frame_benchmarking::log;
 	use sp_runtime::traits::{CheckedAdd, CheckedSub, Saturating};
 	use sp_runtime::ArithmeticError;
 

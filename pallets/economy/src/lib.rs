@@ -511,15 +511,15 @@ pub mod pallet {
 			);
 
 			ensure!(
-				!amount.is_zero() || amount >= T::MinimumStake::get(),
+				!amount.is_zero() && amount >= T::MinimumStake::get(),
 				Error::<T>::StakeBelowMinimum
 			);
 
-			let current_round = T::RoundHandler::get_current_round_info();
+			let current_round = CurrentEra::<T>::get();
 
 			// Check if user already in exit queue
 			ensure!(
-				!InnovationStakingExitQueue::<T>::contains_key(&who, current_round.current),
+				!InnovationStakingExitQueue::<T>::contains_key(&who, current_round),
 				Error::<T>::ExitQueueAlreadyScheduled
 			);
 
@@ -567,8 +567,8 @@ pub mod pallet {
 				amount
 			};
 
-			let current_round = T::RoundHandler::get_current_round_info();
-			let next_round = current_round.current.saturating_add(28u32);
+			let current_round = CurrentEra::<T>::get();
+			let next_round = current_round.saturating_add(28u32);
 
 			// Check if user already in exit queue of the current
 			ensure!(
@@ -868,6 +868,34 @@ pub mod pallet {
 				.ok_or(Error::<T>::EstateExitQueueDoesNotExit)?;
 
 			EstateExitQueue::<T>::remove((&who, round_index, estate_id));
+			T::Currency::unreserve(&who, exit_balance);
+
+			Self::deposit_event(Event::<T>::UnstakedAmountWithdrew(who, exit_balance));
+
+			Ok(().into())
+		}
+
+		/// Withdraw unstaked token from innovation unstaking queue. The unstaked amount will be
+		/// unreserved and become transferable
+		///
+		/// The dispatch origin for this call must be _Signed_.
+		///
+		/// `round_index`: the round index that user can redeem.
+		/// `estate_id`: the estate id that user can redeem.
+		///
+		/// Emit `UnstakedAmountWithdrew` event if successful
+		#[pallet::weight(T::WeightInfo::withdraw_unreserved())]
+		pub fn withdraw_innovation_unreserved(
+			origin: OriginFor<T>,
+			round_index: RoundIndex,
+		) -> DispatchResultWithPostInfo {
+			let who = ensure_signed(origin)?;
+
+			// Get user exit queue
+			let exit_balance = InnovationStakingExitQueue::<T>::get(&who, round_index.clone())
+				.ok_or(Error::<T>::ExitQueueDoesNotExit)?;
+
+			InnovationStakingExitQueue::<T>::remove(&who, round_index);
 			T::Currency::unreserve(&who, exit_balance);
 
 			Self::deposit_event(Event::<T>::UnstakedAmountWithdrew(who, exit_balance));
